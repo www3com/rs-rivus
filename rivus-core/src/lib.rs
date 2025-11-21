@@ -1,4 +1,7 @@
+mod code;
+
 use serde::Serialize;
+use crate::code::Code;
 
 // 封装返回结果
 #[derive(Serialize)]
@@ -10,19 +13,44 @@ pub struct R<T: Serialize> {
 }
 
 impl<T: Serialize> R<T> {
-    pub fn ok(message: String, data: T) -> Self {
+    pub fn ok(data: T) -> Self {
+        Self {
+            code: Code::Ok.as_i32(),
+            message: "ok".to_string(),
+            data: Some(data),
+        }
+    }
+
+    pub fn is_ok(&self) -> bool {
+        self.code == Code::Ok.as_i32()
+    }
+
+    pub fn ok_with_message(data: T, message: String) -> Self {
         Self {
             code: Code::Ok.as_i32(),
             message,
             data: Some(data),
         }
     }
-    pub fn err(code: i32, message: String) -> Self {
+
+    pub fn err(code: i32) -> Self {
+        Self {
+            code,
+            message: "error".to_string(),
+            data: None,
+        }
+    }
+
+    pub fn err_with_message(code: i32, message: String) -> Self {
         Self {
             code,
             message,
             data: None,
         }
+    }
+
+    pub fn is_err(&self) -> bool {
+        self.code != Code::Ok.as_i32()
     }
 }
 
@@ -37,31 +65,4 @@ impl<T: Serialize> Page<T> {
     pub fn new(total: u64, items: Vec<T>) -> Self {
         Self { total, items }
     }
-}
-
-// 封装返回结果
-#[repr(i32)]
-#[derive(Copy, Clone)]
-pub enum Code {
-    Ok = 200,
-    BadRequest = 400,
-    Unauthorized = 401,
-    Forbidden = 403,
-    NotFound = 404,
-    InternalServerError = 500,
-}
-
-impl Code {
-    pub fn as_i32(&self) -> i32 {
-        *self as i32
-    }
-    pub fn to_string(&self) -> String {
-        self.as_i32().to_string()
-    }
-}
-
-#[test]
-fn test_code() {
-    assert_eq!(Code::Ok.as_i32(), 200);
-    assert_eq!(Code::BadRequest.as_i32(), 400);
 }
