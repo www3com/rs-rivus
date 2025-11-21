@@ -1,0 +1,30 @@
+[workspace]
+resolver = "3"
+members = [
+    "rivus-core",
+    "atlas-db",
+    "atlas-log",
+    "atlas-web",
+    "atlas-ws",
+    "atlas-utils",
+]
+
+[workspace.dependencies]
+serde = { version = "1.0.218", features = ["derive"] }
+
+tokio = { version = "1.43.0", features = ["full"] }
+axum = { version = "0.8.1", features = ["multipart", "ws"] }
+
+
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3.19", features = ["env-filter", "time", "chrono"] }
+tracing-appender = "0.2.3"
+anyhow = "1.0.96"
+thiserror = "2.0.11"
+
+lazy_static = "1.5.0"
+futures = "0.3.31"
+
+sqlx = { version = "0.8.3", features = ["runtime-tokio", "mysql", "chrono", "derive"] }
+chrono = { version = "0.4", features = ["serde"] }
+nacos-sdk  = { git = "ssh://git@192.168.6.11/cube/nacos-sdk.git", package = "nacos-sdk"}

@@ -1,0 +1,12 @@
+[package]
+name = "atlas-ws"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tracing = { workspace = true }
+lazy_static = { workspace = true }
+futures = { workspace = true }
+tokio = { workspace = true }
+axum = { workspace = true }
+anyhow = { workspace = true }
