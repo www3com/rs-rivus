@@ -2,7 +2,7 @@
 name = "rivus-core"
 version = "0.1.0"
 edition = "2024"
-description = "核心包"
+description = "统一响应、分页与错误码封装"
 license = "Apache-2.0"
 
 [dependencies]

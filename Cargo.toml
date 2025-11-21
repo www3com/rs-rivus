@@ -2,11 +2,11 @@
 resolver = "3"
 members = [
     "rivus-core",
-    "atlas-db",
-    "atlas-log",
-    "atlas-web",
-    "atlas-ws",
-    "atlas-utils",
+    "rivus-db",
+    "rivus-log",
+    "rivus-web",
+    "rivus-ws",
+    "rivus-utils",
 ]
 
 [workspace.dependencies]

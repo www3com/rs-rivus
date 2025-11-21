@@ -1,7 +1,8 @@
 [package]
-name = "atlas-ws"
+name = "rivus-ws"
 version = "0.1.0"
 edition = "2024"
+description = "基于 Axum 的 WebSocket 连接管理与心跳维护"
 
 [dependencies]
 tracing = { workspace = true }

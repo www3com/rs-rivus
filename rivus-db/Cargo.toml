@@ -1,7 +1,9 @@
 [package]
-name = "atlas-db"
+name = "rivus-db"
 version = "0.1.0"
 edition = "2024"
+description = "SQLx/MySQL 连接池初始化与管理"
+license = "Apache-2.0"
 
 [dependencies]
 sqlx = { workspace = true }

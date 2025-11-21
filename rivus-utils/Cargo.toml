@@ -1,7 +1,9 @@
 [package]
-name = "atlas-utils"
+name = "rivus-utils"
 version = "0.1.0"
 edition = "2024"
+description = "常用工具：HTTP 客户端、时间格式化、IP/网络、ZIP、ID 编解码"
+license = "Apache-2.0"
 
 [dependencies]
 rand = "0.8.5"
