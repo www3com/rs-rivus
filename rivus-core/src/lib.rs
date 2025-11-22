@@ -1,9 +1,8 @@
-mod code;
+pub mod code;
 
 use serde::Serialize;
 use crate::code::Code;
 
-// 封装返回结果
 #[derive(Serialize)]
 pub struct R<T: Serialize> {
     pub code: i32,
@@ -19,10 +18,6 @@ impl<T: Serialize> R<T> {
             message: "ok".to_string(),
             data: Some(data),
         }
-    }
-
-    pub fn is_ok(&self) -> bool {
-        self.code == Code::Ok.as_i32()
     }
 
     pub fn ok_with_message(data: T, message: String) -> Self {
@@ -48,13 +43,8 @@ impl<T: Serialize> R<T> {
             data: None,
         }
     }
-
-    pub fn is_err(&self) -> bool {
-        self.code != Code::Ok.as_i32()
-    }
 }
 
-/// 分页结果
 #[derive(Serialize)]
 pub struct Page<T: Serialize> {
     pub total: u64,

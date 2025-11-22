@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::ip::get_all_self_ip;
+    use rivus_utils::ip::get_all_self_ip;
 
     #[test]
     fn test_local_ip() {

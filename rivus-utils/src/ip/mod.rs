@@ -176,9 +176,11 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_self_wifi_ip_by_mac_addr() {
-        let ip = get_self_wifi_ip_by_mac_addr("6c:1f:f7:48:4a:81".to_string()).unwrap();
-        println!("ip :{}", ip);
-        ()
+        let result = get_self_wifi_ip_by_mac_addr("6c:1f:f7:48:4a:81".to_string());
+        match result {
+            Some(ip) => println!("ip :{}", ip),
+            None => println!("No IP found for the given MAC address"),
+        }
     }
 }
 

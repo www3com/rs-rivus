@@ -8,7 +8,7 @@ mod tests {
     use std::path::Path;
     use tempfile::TempDir;
     use zip::{write::FileOptions, ZipWriter};
-    use crate::zip_extract;
+    use rivus_utils::zip_extract;
 
     // 测试辅助函数：创建测试用ZIP文件
     fn create_test_zip(dir: &Path) -> Result<String> {

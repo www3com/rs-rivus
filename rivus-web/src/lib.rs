@@ -4,12 +4,12 @@ use axum::Router;
 use tokio::signal;
 
 
-pub struct WebServerConfig {
+pub struct ServeOptions {
     pub addr: Option<String>,
     pub router: Router,
 }
 
-pub async fn run(config: WebServerConfig) -> anyhow::Result<()> {
+pub async fn serve(config: ServeOptions) -> anyhow::Result<()> {
     // 启动服务器
     let addr = if let Some(addr) = config.addr {
         addr
