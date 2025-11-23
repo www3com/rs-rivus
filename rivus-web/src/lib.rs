@@ -1,5 +1,4 @@
-// 重新导出整个 axum 包
-pub use axum;
+
 use axum::Router;
 use tokio::signal;
 
@@ -9,9 +8,9 @@ pub struct ServeOptions {
     pub router: Router,
 }
 
-pub async fn serve(config: ServeOptions) -> anyhow::Result<()> {
+pub async fn serve(options: ServeOptions) -> anyhow::Result<()> {
     // 启动服务器
-    let addr = if let Some(addr) = config.addr {
+    let addr = if let Some(addr) = options.addr {
         addr
     } else {
         "127.0.0.1:8000".to_string()
@@ -22,7 +21,7 @@ pub async fn serve(config: ServeOptions) -> anyhow::Result<()> {
     let listener = tokio::net::TcpListener::bind(addr).await?;
 
     // 优雅关闭处理
-    let server = axum::serve(listener, config.router).with_graceful_shutdown(shutdown_signal());
+    let server = axum::serve(listener, options.router).with_graceful_shutdown(shutdown_signal());
 
     if let Err(e) = server.await {
         tracing::error!("Server error: {}", e);
