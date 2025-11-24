@@ -1,3 +1,0 @@
-name: ${MACRO_NAME:Charlie}
-sex: ${MACRO_SEX:male}
-address: ${MACRO_ADDRESS:Guangzhou}

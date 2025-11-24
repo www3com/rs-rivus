@@ -56,7 +56,8 @@ pub fn load_from_str<T: DeserializeOwned>(yaml_content: &str) -> Result<T, YamlL
 /// 编译时嵌入 YAML 文件
 #[macro_export]
 macro_rules! include_yaml {
-    ($path:expr) => {
-        $crate::load_from_str::<serde_yaml::Value>(include_str!($path))
+    // 支持指定类型
+    ($path:expr, $t:ty) => {
+        $crate::load_from_str::<$t>(include_str!($path))
     };
 }

@@ -1,7 +1,11 @@
+pub mod result;
+mod r;
+mod code;
 
 use axum::Router;
 use tokio::signal;
 
+rust_i18n::i18n!("locales");
 
 pub struct ServeOptions {
     pub addr: Option<String>,
@@ -9,6 +13,7 @@ pub struct ServeOptions {
 }
 
 pub async fn serve(options: ServeOptions) -> anyhow::Result<()> {
+    rust_i18n::set_locale("zh");
     // 启动服务器
     let addr = if let Some(addr) = options.addr {
         addr

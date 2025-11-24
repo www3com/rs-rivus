@@ -11,10 +11,8 @@ pub struct Config {
 #[test]
 fn test_include_yaml_with_config_struct() {
     // 使用 include_yaml! 宏嵌入 YAML 文件并解析为 Config 结构体
-    let yaml_value = include_yaml!("config_struct.yaml").unwrap();
+    let config = include_yaml!("config_struct.yaml", Config).unwrap();
     
-    // 将 serde_yaml::Value 转换为 Config 结构体
-    let config: Config = serde_yaml::from_value(yaml_value).unwrap();
     
     assert_eq!(config.name, "Alice");
     assert_eq!(config.sex, 1);
