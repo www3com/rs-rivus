@@ -2,7 +2,8 @@
 #[cfg(test)]
 mod tests {
     use rivus_core::code::Code;
-    use rivus_core::{Page, R};
+    use rivus_core::page::Page;
+    use rivus_core::r::R;
 
     #[test]
     fn test_r_ok() {

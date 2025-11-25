@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use serde::Serialize;
 use crate::code::Code;
 
@@ -6,6 +7,7 @@ pub struct R<T: Serialize> {
     pub code: i32,
     pub message: String,
     pub data: Option<T>,
+    pub args: Option<HashMap<&'static str, String>>,
 }
 
 impl<T: Serialize> R<T> {
@@ -14,6 +16,7 @@ impl<T: Serialize> R<T> {
             code: Code::Ok.as_i32(),
             message: "ok".to_string(),
             data: Some(data),
+            args: None,
         }
     }
 
@@ -22,6 +25,7 @@ impl<T: Serialize> R<T> {
             code: Code::Ok.as_i32(),
             message,
             data: Some(data),
+            args: None,
         }
     }
 
@@ -30,6 +34,7 @@ impl<T: Serialize> R<T> {
             code,
             message: "error".to_string(),
             data: None,
+            args: None,
         }
     }
 
@@ -38,6 +43,16 @@ impl<T: Serialize> R<T> {
             code,
             message,
             data: None,
+            args: None,
+        }
+    }
+
+    pub fn err_with_args(code: i32, args: HashMap<&'static str, String>) -> Self {
+        Self {
+            code,
+            message: "error".to_string(),
+            data: None,
+            args: Some(args),
         }
     }
 }

@@ -1,41 +1,54 @@
-pub mod result;
-mod r;
-mod code;
-
-use axum::Router;
+use axum::{Router, middleware};
 use tokio::signal;
 
-rust_i18n::i18n!("locales");
+pub mod result;
 
-pub struct ServeOptions {
-    pub addr: Option<String>,
-    pub router: Router,
+pub struct WebServer {
+    router: Router,
+    addr: String,
+    i18n_path: String,
+    default_locale: String,
 }
 
-pub async fn serve(options: ServeOptions) -> anyhow::Result<()> {
-    rust_i18n::set_locale("zh");
-    // 启动服务器
-    let addr = if let Some(addr) = options.addr {
-        addr
-    } else {
-        "127.0.0.1:8000".to_string()
-    };
-
-    tracing::info!("Starting server at {}", addr);
-
-    let listener = tokio::net::TcpListener::bind(addr).await?;
-
-    // 优雅关闭处理
-    let server = axum::serve(listener, options.router).with_graceful_shutdown(shutdown_signal());
-
-    if let Err(e) = server.await {
-        tracing::error!("Server error: {}", e);
-        return Err(anyhow::anyhow!("Server error: {}", e));
+impl WebServer {
+    pub fn new(router: Router, addr: impl Into<String>) -> Self {
+        Self {
+            router,
+            addr: addr.into(),
+            i18n_path: "i18n".to_string(),
+            default_locale: "en".to_string(),
+        }
     }
 
-    tracing::info!("Server shutdown completed");
-    Ok(())
+    pub fn i18n_path(mut self, path: impl Into<String>) -> Self {
+        self.i18n_path = path.into();
+        self
+    }
+
+    pub fn default_locale(mut self, locale: impl Into<String>) -> Self {
+        self.default_locale = locale.into();
+        self
+    }
+
+    pub async fn run(self) -> anyhow::Result<()>  {
+
+        tracing::info!("Starting web server at {}", self.addr);
+
+        let listener = tokio::net::TcpListener::bind(&self.addr).await?;
+        tracing::info!("⌛️ Waiting for connections...");
+        tracing::info!("💡 Press Ctrl+C to stop the server");
+        // 优雅关闭处理
+        let server = axum::serve(listener, self.router).with_graceful_shutdown(shutdown_signal());
+        if let Err(e) = server.await {
+            tracing::error!("Server error: {}", e);
+            return Err(anyhow::anyhow!("Server error: {}", e));
+        }
+
+        tracing::info!("Server shutdown completed");
+        Ok(())
+    }
 }
+
 
 async fn shutdown_signal() {
     let ctrl_c = async {

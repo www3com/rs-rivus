@@ -1,22 +1,20 @@
-use crate::code::Code;
-use crate::r::R;
 use axum::Json;
 use axum::body::Body;
 use axum::http::{Response, StatusCode};
 use axum::response::IntoResponse;
-use rust_i18n::t;
 use serde::Serialize;
 use std::collections::HashMap;
 use std::fmt;
 use thiserror::Error;
 use validator::ValidationErrors;
+use rivus_core::code::Code;
+use rivus_core::r::R;
 
 pub struct Rok<T>(pub T);
 
 impl<T: Serialize> IntoResponse for Rok<T> {
     fn into_response(self) -> Response<Body> {
-        let message = t!(Code::Ok.to_string());
-        let r = R::ok_with_message(Some(self.0), message.to_string());
+        let r = R::ok(Some(self.0));
         (StatusCode::OK, Json(r)).into_response()
     }
 }
@@ -27,7 +25,7 @@ pub enum Rerr {
     #[error("{0}")]
     Of(i32),
     #[error("{0}")]
-    OfMsg(i32, HashMap<&'static str, String>),
+    OfMessage(i32, HashMap<&'static str, String>),
     #[error("{0}")]
     Validate(#[from] ValidationErrors),
     #[error("{0}")]
@@ -38,7 +36,7 @@ impl fmt::Debug for Rerr {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Rerr::Of(code) => write!(f, "Error({:?})", code),
-            Rerr::OfMsg(code, params) => write!(f, "Error({:?}, {:?})", code, params),
+            Rerr::OfMessage(code, params) => write!(f, "Error({:?}, {:?})", code, params),
             Rerr::Validate(err) => write!(f, "ValidationError({:?})", err),
             Rerr::Other(err) => write!(f, "{:?}", err),
         }
@@ -49,15 +47,14 @@ impl IntoResponse for Rerr {
     fn into_response(self) -> Response<Body> {
         let (status, r) = match self {
             Rerr::Of(code) => {
-                let message = t!(code.to_string());
                 (
                     StatusCode::OK,
-                    R::<()>::err_with_message(code, message.to_string()),
+                    R::<()>::err(code),
                 )
             }
-            Rerr::OfMsg(code, params) => (
+            Rerr::OfMessage(code, params) => (
                 StatusCode::OK,
-                R::err_with_message(code, format(code, params)),
+                R::err_with_args(code, params),
             ),
             Rerr::Validate(e) => (
                 StatusCode::BAD_REQUEST,
@@ -65,22 +62,13 @@ impl IntoResponse for Rerr {
             ),
             Rerr::Other(_) => {
                 tracing::error!("{:?}", self);
-                let message = t!(Code::InternalServerError.to_string());
                 (
                     StatusCode::INTERNAL_SERVER_ERROR,
-                    R::err_with_message(Code::InternalServerError.as_i32(), message.to_string()),
+                    R::err(Code::InternalServerError.as_i32()),
                 )
             }
         };
 
         (status, Json(r)).into_response()
     }
-}
-
-fn format(code: i32, params: HashMap<&'static str, String>) -> String {
-    let mut template = t!(code.to_string()).to_string();
-    for (key, value) in params {
-        template = template.replace(&format!("{{{{{}}}}}", key), value.as_str());
-    }
-    template
 }

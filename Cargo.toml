@@ -20,7 +20,6 @@ dotenvy = "0.15.7"
 # rivus-web
 tokio = { version = "1.48.0", features = ["full"] }
 axum = { version = "0.8.7", features = ["multipart", "ws"] }
-rust-i18n = "3.1.5"
 
 
 tracing = "0.1.41"
