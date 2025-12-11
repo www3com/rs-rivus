@@ -1,7 +1,9 @@
 [package]
 name = "rivus-yaml"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
+description = "yaml 工具，含有变量替换"
+license = "Apache-2.0"
 
 [dependencies]
 serde = {workspace = true}

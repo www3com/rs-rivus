@@ -47,12 +47,7 @@ mod connection_manager_tests {
 
     #[tokio::test]
     async fn test_remove_connection_global() {
-        // Use a unique client ID to avoid conflicts with other tests
-        let cli_id = 99999u64;
-        
-        // First, ensure no existing connections for this client
-        CONN_MGR.lock().await.remove_connection(cli_id, 0); // Try to remove any existing
-        
+        let cli_id = 12345u64;
         let (tx, _rx) = mpsc::channel(10);
         
         // Add connection using global manager

@@ -2,7 +2,7 @@
 resolver = "3"
 members = [
     "rivus-core",
-    "rivus-log",
+    "rivus-logger",
     "rivus-web",
     "rivus-ws",
     "rivus-utils", "rivus-yaml",

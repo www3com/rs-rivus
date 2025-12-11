@@ -1,13 +1,14 @@
-use std::collections::HashMap;
-use serde::Serialize;
 use crate::code::Code;
+use serde::Serialize;
+use std::collections::HashMap;
 
 #[derive(Serialize)]
 pub struct R<T: Serialize> {
     pub code: i32,
     pub message: String,
     pub data: Option<T>,
-    pub args: Option<HashMap<&'static str, String>>,
+    #[serde(skip_serializing)]
+    pub args: Option<HashMap<String, String>>,
 }
 
 impl<T: Serialize> R<T> {
@@ -47,7 +48,15 @@ impl<T: Serialize> R<T> {
         }
     }
 
-    pub fn err_with_args(code: i32, args: HashMap<&'static str, String>) -> Self {
+    pub fn err_with_args<K, V>(code: i32, args: HashMap<K, V>) -> Self
+    where
+        K: Into<String>,
+        V: Into<String>,
+    {
+        let args = args
+            .into_iter()
+            .map(|(k, v)| (k.into(), v.into()))
+            .collect();
         Self {
             code,
             message: "error".to_string(),

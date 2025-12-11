@@ -14,6 +14,7 @@ pub enum Code {
 
     // 禁止访问：客户端没有访问内容的权限
     Forbidden = 403,
+
     // 未找到：服务器无法找到请求的资源
     NotFound = 404,
 
@@ -46,16 +47,17 @@ pub enum Code {
 
     // 参数不合法：客户端请求包含非法参数
     IllegalParam = 902,
-
-
 }
 
 impl Code {
     pub fn as_i32(&self) -> i32 {
         *self as i32
     }
-    pub fn to_string(&self) -> String {
-        self.as_i32().to_string()
+}
+
+impl std::fmt::Display for Code {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.as_i32())
     }
 }
 
@@ -63,4 +65,6 @@ impl Code {
 fn test_code() {
     assert_eq!(Code::Ok.as_i32(), 200);
     assert_eq!(Code::BadRequest.as_i32(), 400);
+    assert_eq!(Code::Ok.to_string(), "200");
+    assert_eq!(format!("{}", Code::InternalServerError), "500");
 }

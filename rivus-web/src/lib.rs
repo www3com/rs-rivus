@@ -1,40 +1,51 @@
+use crate::i18n_middleware::handle_i18n;
+use axum::middleware::from_fn;
 use axum::{Router, middleware};
+use axum::{extract::Request, middleware::Next, response::Response};
+use std::future::Future;
 use tokio::signal;
 
+mod i18n_middleware;
 pub mod result;
+pub mod i18n;
 
 pub struct WebServer {
     router: Router,
-    addr: String,
-    i18n_path: String,
-    default_locale: String,
+    address: String,
+    i18n_dir: String,
 }
 
 impl WebServer {
-    pub fn new(router: Router, addr: impl Into<String>) -> Self {
+    pub fn new(router: Router, address: impl Into<String>) -> Self {
         Self {
             router,
-            addr: addr.into(),
-            i18n_path: "i18n".to_string(),
-            default_locale: "en".to_string(),
+            address: address.into(),
+            i18n_dir: "i18n".to_string(),
         }
     }
 
-    pub fn i18n_path(mut self, path: impl Into<String>) -> Self {
-        self.i18n_path = path.into();
+    pub fn i18n_dir(mut self, dir: impl Into<String>) -> Self {
+        self.i18n_dir = dir.into();
+        self.router = self.router.layer(from_fn(handle_i18n));
         self
     }
 
-    pub fn default_locale(mut self, locale: impl Into<String>) -> Self {
-        self.default_locale = locale.into();
+    pub fn with_middleware<F, Fut>(mut self, f: F) -> Self
+    where
+        F: Clone + Send + Sync + 'static + Fn(Request, Next) -> Fut,
+        Fut: Future<Output = Response> + Send + 'static,
+    {
+        self.router = self.router.layer(middleware::from_fn(f));
         self
     }
 
-    pub async fn run(self) -> anyhow::Result<()>  {
+    pub async fn run(self) -> anyhow::Result<()> {
+        // 初始化 i18n
+        i18n::init(&self.i18n_dir);
 
-        tracing::info!("Starting web server at {}", self.addr);
+        tracing::info!("Starting web server at {}", self.address);
 
-        let listener = tokio::net::TcpListener::bind(&self.addr).await?;
+        let listener = tokio::net::TcpListener::bind(&self.address).await?;
         tracing::info!("⌛️ Waiting for connections...");
         tracing::info!("💡 Press Ctrl+C to stop the server");
         // 优雅关闭处理
@@ -48,7 +59,6 @@ impl WebServer {
         Ok(())
     }
 }
-
 
 async fn shutdown_signal() {
     let ctrl_c = async {

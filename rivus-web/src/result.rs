@@ -9,12 +9,17 @@ use thiserror::Error;
 use validator::ValidationErrors;
 use rivus_core::code::Code;
 use rivus_core::r::R;
+use crate::i18n;
+use crate::i18n::CURRENT_LANG;
 
 pub struct Rok<T>(pub T);
 
 impl<T: Serialize> IntoResponse for Rok<T> {
     fn into_response(self) -> Response<Body> {
-        let r = R::ok(Some(self.0));
+        let lang = CURRENT_LANG.with(|lang| lang.clone());
+        let msg = i18n::translate(&lang, &Code::Ok.to_string()).unwrap_or_else(|| Code::Ok.to_string());
+
+        let r = R::ok_with_message(Some(self.0), msg);
         (StatusCode::OK, Json(r)).into_response()
     }
 }
@@ -47,24 +52,38 @@ impl IntoResponse for Rerr {
     fn into_response(self) -> Response<Body> {
         let (status, r) = match self {
             Rerr::Of(code) => {
+                let lang = CURRENT_LANG.with(|lang| lang.clone());
+                let msg = i18n::translate(&lang, &code.to_string()).unwrap_or_else(|| code.to_string());
                 (
                     StatusCode::OK,
-                    R::<()>::err(code),
+                    R::<()>::err_with_message(code, msg),
                 )
             }
-            Rerr::OfMessage(code, params) => (
-                StatusCode::OK,
-                R::err_with_args(code, params),
-            ),
+            Rerr::OfMessage(code, params) => {
+                // 从 task-local 读取语言
+                let lang = CURRENT_LANG.with(|lang| lang.clone());
+                let mut msg = i18n::translate(&lang, &code.to_string()).unwrap_or_else(|| code.to_string());
+                
+                for (k, v) in &params {
+                    msg = msg.replace(&format!("{{{}}}", k), v);
+                }
+
+                (
+                    StatusCode::OK,
+                    R::<()>::err_with_message(code, msg),
+                )
+            },
             Rerr::Validate(e) => (
                 StatusCode::BAD_REQUEST,
                 R::err_with_message(Code::BadRequest.as_i32(), e.to_string()),
             ),
             Rerr::Other(_) => {
                 tracing::error!("{:?}", self);
+                let lang = CURRENT_LANG.with(|lang| lang.clone());
+                let msg = i18n::translate(&lang, &Code::InternalServerError.to_string()).unwrap_or_else(|| Code::InternalServerError.to_string());
                 (
                     StatusCode::INTERNAL_SERVER_ERROR,
-                    R::err(Code::InternalServerError.as_i32()),
+                    R::<()>::err_with_message(Code::InternalServerError.as_i32(), msg),
                 )
             }
         };
