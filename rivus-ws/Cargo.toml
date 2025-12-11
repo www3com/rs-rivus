@@ -3,6 +3,7 @@ name = "rivus-ws"
 version = "0.2.0"
 edition = "2024"
 description = "基于 Axum 的 WebSocket 连接管理与心跳维护"
+license = "Apache-2.0"
 
 [dependencies]
 tracing = { workspace = true }
