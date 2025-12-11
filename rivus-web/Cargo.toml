@@ -5,7 +5,7 @@ edition = "2024"
 description = "基于 Axum 的 Web 服务基础"
 
 [dependencies]
-rivus-core = {path = "../rivus-core"}
+rivus-core = '0.2.0'
 tokio = { workspace = true }
 axum = { workspace = true }
 tracing = { workspace = true }

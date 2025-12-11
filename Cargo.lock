@@ -1597,6 +1597,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "rivus-core"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b9471e332d503b699728ea4d2598bfdcd6ef463ba83aea8aa0530a9ba713d132"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "rivus-logger"
 version = "0.2.0"
 dependencies = [
@@ -1629,7 +1638,7 @@ dependencies = [
  "anyhow",
  "axum",
  "reqwest 0.11.27",
- "rivus-core",
+ "rivus-core 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde",
  "serde_json",
  "thiserror 2.0.17",
