@@ -3,6 +3,7 @@ name = "rivus-web"
 version = "0.2.0"
 edition = "2024"
 description = "基于 Axum 的 Web 服务基础"
+license = "Apache-2.0"
 
 [dependencies]
 rivus-core = '0.2.0'
