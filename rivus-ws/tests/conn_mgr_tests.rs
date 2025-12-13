@@ -47,7 +47,7 @@ mod connection_manager_tests {
 
     #[tokio::test]
     async fn test_remove_connection_global() {
-        let cli_id = 12345u64;
+        let cli_id = 12346u64; // Unique ID
         let (tx, _rx) = mpsc::channel(10);
         
         // Add connection using global manager
@@ -68,7 +68,7 @@ mod connection_manager_tests {
         let (tx1, _rx1) = mpsc::channel(10);
         let (tx2, _rx2) = mpsc::channel(10);
         
-        let cli_id = 12345u64;
+        let cli_id = 12347u64; // Unique ID
         let conn_id1 = CONN_MGR.lock().await.add_connection(cli_id, tx1);
         let conn_id2 = CONN_MGR.lock().await.add_connection(cli_id, tx2);
         

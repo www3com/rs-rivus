@@ -23,7 +23,7 @@ mod http_client_builder_tests {
 
     #[test]
     fn test_builder_new() {
-        let builder = HttpClientBuilder::new();
+        let _builder = HttpClientBuilder::new();
         assert!(true); // If we got here, it didn't panic
     }
 

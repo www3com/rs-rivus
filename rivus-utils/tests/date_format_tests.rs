@@ -1,5 +1,4 @@
 use chrono::NaiveDateTime;
-use serde::{Serialize, Serializer};
 
 #[cfg(test)]
 mod date_format_tests {

@@ -160,7 +160,7 @@ impl Default for Logger {
     fn default() -> Self {
         Self {
             level: LogLevel::Info,
-            outputs: vec![],
+            outputs: vec![LogOutput::Console],
             file: LogFile::new("logs", "app"),
             time_format: DEFAULT_TIME_FORMAT.to_string(),
         }

@@ -5,7 +5,7 @@ members = [
     "rivus-logger",
     "rivus-web",
     "rivus-ws",
-    "rivus-utils", "rivus-yaml",
+    "rivus-utils", "rivus-yaml", "rivus-sqlx",
 ]
 
 [workspace.dependencies]
@@ -30,10 +30,7 @@ thiserror = "2.0.17"
 
 lazy_static = "1.5.0"
 futures = "0.3.31"
-futures-util = "0.3"
 
 chrono = { version = "0.4.42", features = ["serde"] }
 reqwest = { version = "0.11", features = ["json", "stream"] }
 tempfile = "3.8"
-zip = "0.6"
-rand = "0.8"

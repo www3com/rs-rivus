@@ -1,9 +1,8 @@
 use anyhow::anyhow;
 use futures::channel::mpsc;
 use futures::SinkExt;
-use lazy_static::lazy_static;
 use std::collections::HashMap;
-use std::sync::Arc;
+use std::sync::{Arc, LazyLock};
 use tokio::sync::Mutex;
 
 pub struct Msg {
@@ -12,11 +11,10 @@ pub struct Msg {
     pub body: String,
 }
 
-// 使用 lazy_static 创建全局单例
-lazy_static! {
-    pub static ref CONN_MGR: Arc<Mutex<ConnectionManager>> =
-        Arc::new(Mutex::new(ConnectionManager::new()));
-}
+// 使用 LazyLock 创建全局单例
+pub static CONN_MGR: LazyLock<Arc<Mutex<ConnectionManager>>> = LazyLock::new(|| {
+    Arc::new(Mutex::new(ConnectionManager::new()))
+});
 
 pub struct ConnectionManager {
     connections: HashMap<u64, HashMap<usize, mpsc::Sender<String>>>,

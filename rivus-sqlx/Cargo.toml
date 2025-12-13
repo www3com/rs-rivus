@@ -1,0 +1,23 @@
+[package]
+name = "rivus-sqlx"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+serde = { version = "1.0.228", features = ["derive"] }
+anyhow = "1.0.100"
+quick-xml = { version = "0.38.4", features = ["serialize"] }
+walkdir = "2.5.0"
+sqlx = { version = "0.8.6", features = ["runtime-tokio", "mysql", "postgres", "sqlite", "chrono", "derive"] }
+tokio = { version = "1", features = ["rt", "sync", "macros"] }
+rivus-sqlx-macros = { path = "../rivus-sqlx-macros" }
+serde_json = { workspace = true }
+dashmap = "7.0.0-rc2"
+chrono = { workspace = true, features = ["serde"] }
+rust_decimal = { version = "1.39.0", features = ["serde"] }
+
+
+
+[dev-dependencies]
+tokio = { version = "1", features = ["full"] }
+tempfile.workspace = true
